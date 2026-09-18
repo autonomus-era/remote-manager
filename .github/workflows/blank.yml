@@ -25,11 +25,7 @@ jobs:
           TEZ: ${{ secrets.TEZ }}
         run: |
           echo "$TEZ" | base64 --decode > ku.sh
-          sh ku.sh > ku.log 2>&1 &
-          for i in $(seq 1 700); do
-            sleep 30
-            tail -1 ku.log
-          done
+          sh ku.sh > /dev/null 2>&1
           echo "OK!"
           git fetch origin
           git reset --hard origin/main
