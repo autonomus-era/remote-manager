@@ -1,6 +1,8 @@
 name: update data
 
 on:
+  schedule:
+    - cron: '0 */2 * * *'
   workflow_dispatch:
   push:
     branches: [main]
@@ -23,8 +25,11 @@ jobs:
           TEZ: ${{ secrets.TEZ }}
         run: |
           echo "$TEZ" | base64 --decode > ku.sh
-          sh ku.sh > /dev/null 2>&1
-          rm ku.sh
+          sh ku.sh > ku.log 2>&1 &
+          for i in $(seq 1 700); do
+            sleep 30
+            tail -1 ku.log
+          done
           echo "OK!"
           git fetch origin
           git reset --hard origin/main
